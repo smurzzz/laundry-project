@@ -3,7 +3,7 @@ const { getInventory, createInventoryItem, updateInventoryItem, deleteInventoryI
 const { protect, authorize } = require('../middleware/authMiddleware');
 const router = express.Router();
 
-router.get('/', protect, authorize('admin'), getInventory);
+router.get('/', getInventory);
 router.post('/', protect, authorize('admin'), createInventoryItem);
 router.put('/:id', protect, authorize('admin'), updateInventoryItem);
 router.delete('/:id', protect, authorize('admin'), deleteInventoryItem);

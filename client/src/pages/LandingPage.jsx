@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { ArrowRightIcon, CheckBadgeIcon, ClockIcon, SparklesIcon, TruckIcon, ShieldCheckIcon, ChartBarIcon, BanknotesIcon } from '@heroicons/react/24/outline';
 import { useAuth } from '../contexts/AuthContext';
+import logo from '../assets/64315e80-69fa-4571-a670-a26a992ac906.jpeg';
 
 const highlights = [
   { label: 'Pickup speed', value: 'Same-day' },
@@ -93,8 +94,9 @@ const LandingPage = () => {
             </div>
           </div>
 
-          <div className="relative">
-            <div className="absolute -inset-6 rounded-[2rem] bg-gradient-to-br from-cyan-500/10 via-transparent to-blue-600/10 blur-2xl" />
+          <div className="relative flex flex-col items-center justify-center">
+            <div className="absolute -inset-8 rounded-[2rem] bg-gradient-to-br from-purple-500/20 via-transparent to-pink-600/20 blur-3xl" />
+            <img src={logo} alt="CleanWash" className="relative h-40 w-40 drop-shadow-lg mb-6" />
             <div className="relative space-y-4 rounded-[2rem] border border-white/70 bg-slate-950/95 p-5 text-white shadow-[0_28px_90px_-46px_rgba(15,23,42,0.8)] dark:border-white/10 sm:p-6">
               <div className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
                 <div>
@@ -186,7 +188,7 @@ const LandingPage = () => {
             {[
               'Live order updates for customers',
               'Fast access to service history',
-              'Admin tools for inventory and support',
+              'Admin tools for services and support',
               'A clean mobile-friendly interface',
             ].map((item) => (
               <div key={item} className="flex items-start gap-3 rounded-2xl border border-slate-200/70 bg-white/70 p-4 dark:border-white/10 dark:bg-slate-950/35">

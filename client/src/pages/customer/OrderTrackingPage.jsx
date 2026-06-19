@@ -25,17 +25,21 @@ const OrderTrackingPage = () => {
   };
 
   const statusColors = {
-    pending: 'bg-yellow-100 text-yellow-800',
-    confirmed: 'bg-blue-100 text-blue-800',
-    processing: 'bg-purple-100 text-purple-800',
-    ready: 'bg-green-100 text-green-800',
-    completed: 'bg-green-200 text-green-900',
-    cancelled: 'bg-red-100 text-red-800',
+    Pending: 'bg-yellow-100 text-yellow-800',
+    Confirmed: 'bg-blue-100 text-blue-800',
+    Washing: 'bg-purple-100 text-purple-800',
+    Drying: 'bg-violet-100 text-violet-800',
+    Folding: 'bg-sky-100 text-sky-800',
+    'Ready for Pickup': 'bg-green-100 text-green-800',
+    'Out for Delivery': 'bg-cyan-100 text-cyan-800',
+    Completed: 'bg-green-200 text-green-900',
+    Cancelled: 'bg-red-100 text-red-800',
   };
 
   const getStatusSteps = (status) => {
-    const steps = ['pending', 'confirmed', 'processing', 'ready', 'completed'];
-    return steps.indexOf(status) + 1;
+    const steps = ['Pending', 'Confirmed', 'Washing', 'Drying', 'Folding', 'Ready for Pickup', 'Out for Delivery', 'Completed'];
+    const index = steps.indexOf(status);
+    return index === -1 ? 1 : index + 1;
   };
 
   return (
@@ -64,7 +68,7 @@ const OrderTrackingPage = () => {
               <div className="flex justify-between items-start">
                 <div>
                   <p className="text-sm font-medium text-slate-600 dark:text-slate-400">Order #{order._id?.slice(-6)}</p>
-                  <p className="text-lg font-semibold text-slate-900 dark:text-white mt-1">${order.totalAmount || 0}</p>
+                  <p className="text-lg font-semibold text-slate-900 dark:text-white mt-1">₱{order.totalAmount || 0}</p>
                 </div>
                 <span className={`px-3 py-1 rounded-full text-sm font-medium ${statusColors[order.status] || 'bg-gray-100'}`}>
                   {order.status}
@@ -89,15 +93,15 @@ const OrderTrackingPage = () => {
                   <div className="grid grid-cols-2 gap-4 text-sm">
                     <div>
                       <p className="text-slate-600 dark:text-slate-400">Pickup Date</p>
-                      <p className="font-medium text-slate-900 dark:text-white">{new Date(order.pickupDate).toLocaleDateString()}</p>
+                      <p className="font-medium text-slate-900 dark:text-white">{new Date(order.estimatedPickup || order.createdAt).toLocaleDateString()}</p>
                     </div>
                     <div>
                       <p className="text-slate-600 dark:text-slate-400">Delivery Date</p>
-                      <p className="font-medium text-slate-900 dark:text-white">{new Date(order.deliveryDate).toLocaleDateString()}</p>
+                      <p className="font-medium text-slate-900 dark:text-white">{new Date(order.estimatedDelivery || order.createdAt).toLocaleDateString()}</p>
                     </div>
                     <div className="col-span-2">
                       <p className="text-slate-600 dark:text-slate-400">Services</p>
-                      <p className="font-medium text-slate-900 dark:text-white">{order.services?.length || 0} services</p>
+                      <p className="font-medium text-slate-900 dark:text-white">{order.items?.length || 0} item(s)</p>
                     </div>
                   </div>
                 </div>

@@ -3,7 +3,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useTheme } from '../contexts/ThemeContext';
 import MobileSidebar from './MobileSidebar';
-import { Bars3Icon, MoonIcon, SparklesIcon, SunIcon } from '@heroicons/react/24/outline';
+import { Bars3Icon, MoonIcon, SunIcon } from '@heroicons/react/24/outline';
+import logo from '../assets/64315e80-69fa-4571-a670-a26a992ac906.jpeg';
 
 const Navbar = () => {
   const { user, logout } = useAuth();
@@ -21,9 +22,7 @@ const Navbar = () => {
               <Bars3Icon className="h-5 w-5" />
             </button>
             <Link to="/" className="group flex items-center gap-3">
-              <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-cyan-400 to-blue-600 text-white shadow-lg shadow-cyan-500/25 transition group-hover:-translate-y-0.5">
-                <SparklesIcon className="h-5 w-5" />
-              </span>
+              <img src={logo} alt="CleanWash Logo" className="h-12 w-12 transition group-hover:-translate-y-0.5" />
               <span>
                 <span className="block text-base font-bold leading-tight text-slate-950 dark:text-white sm:text-lg">CleanWash</span>
                 <span className="hidden text-xs font-medium text-slate-500 dark:text-slate-400 sm:block">Laundry Hub</span>

@@ -39,7 +39,7 @@ const ServicesPage = () => {
       <div className="app-card">
         <p className="app-kicker">Catalog control</p>
         <h2 className="app-page-title mt-3">Service catalog</h2>
-        <p className="mt-2 app-muted">Create and manage Wash, Dry, Fold, Iron, and Express services.</p>
+        <p className="mt-2 app-muted">Create and manage laundry services like wash, dry clean, iron, and special care.</p>
       </div>
       <div className="grid gap-6 xl:grid-cols-2">
         <div className="app-card">
@@ -97,7 +97,7 @@ const ServicesPage = () => {
               {services.map((service) => (
                 <div key={service._id} className="app-panel">
                   <p className="font-semibold text-slate-900 dark:text-white">{service.name}</p>
-                  <p className="text-sm text-slate-500 dark:text-slate-400">{service.category} · ${service.price.toFixed(2)} · {service.duration}</p>
+                  <p className="text-sm text-slate-500 dark:text-slate-400">{service.category} · ₱{service.price.toFixed(2)} · {service.duration}</p>
                   {service.options?.length > 0 && (
                     <div className="mt-3 space-y-2 rounded-2xl border border-slate-200 bg-slate-50 p-3 text-sm text-slate-600 dark:border-white/10 dark:bg-slate-950/10 dark:text-slate-300">
                       <p className="font-semibold">Choices</p>

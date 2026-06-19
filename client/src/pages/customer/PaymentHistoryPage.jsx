@@ -44,7 +44,7 @@ const PaymentHistoryPage = () => {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6">
           <p className="text-sm text-slate-600 dark:text-slate-400">Total Spent</p>
-          <p className="text-3xl font-bold text-slate-900 dark:text-white mt-2">${totalSpent.toFixed(2)}</p>
+          <p className="text-3xl font-bold text-slate-900 dark:text-white mt-2">₱{totalSpent.toFixed(2)}</p>
         </div>
         <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6">
           <p className="text-sm text-slate-600 dark:text-slate-400">Total Orders</p>
@@ -52,7 +52,7 @@ const PaymentHistoryPage = () => {
         </div>
         <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6">
           <p className="text-sm text-slate-600 dark:text-slate-400">Average Order</p>
-          <p className="text-3xl font-bold text-slate-900 dark:text-white mt-2">${(totalSpent / (totalOrders || 1)).toFixed(2)}</p>
+          <p className="text-3xl font-bold text-slate-900 dark:text-white mt-2">₱{(totalSpent / (totalOrders || 1)).toFixed(2)}</p>
         </div>
       </div>
 
@@ -97,7 +97,7 @@ const PaymentHistoryPage = () => {
               {filteredPayments.map((payment) => (
                 <tr key={payment._id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition">
                   <td className="px-4 py-3 text-sm text-slate-900 dark:text-white">#{payment._id?.slice(-6)}</td>
-                  <td className="px-4 py-3 text-sm font-medium text-slate-900 dark:text-white">${payment.totalAmount?.toFixed(2)}</td>
+                  <td className="px-4 py-3 text-sm font-medium text-slate-900 dark:text-white">₱{payment.totalAmount?.toFixed(2)}</td>
                   <td className="px-4 py-3 text-sm text-slate-600 dark:text-slate-400">{new Date(payment.createdAt).toLocaleDateString()}</td>
                   <td className="px-4 py-3 text-sm">
                     <span

@@ -4,7 +4,7 @@ const laundryServiceSchema = new mongoose.Schema({
   name: { type: String, required: true, unique: true },
   category: {
     type: String,
-    enum: ['Wash', 'Dry Clean', 'Iron', 'Express', 'Special'],
+    enum: ['Wash', 'Dry Clean', 'Iron', 'Express', 'Special', 'Product'],
     default: 'Wash',
   },
   description: { type: String },

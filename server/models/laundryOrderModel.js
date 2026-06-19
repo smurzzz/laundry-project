@@ -1,7 +1,10 @@
 const mongoose = require('mongoose');
 
 const orderItemSchema = new mongoose.Schema({
-  service: { type: mongoose.Schema.Types.ObjectId, ref: 'LaundryService', required: true },
+  service: { type: mongoose.Schema.Types.ObjectId, ref: 'LaundryService' },
+  inventory: { type: mongoose.Schema.Types.ObjectId, ref: 'Inventory' },
+  itemType: { type: String, enum: ['Service', 'Inventory'] },
+  name: { type: String },
   quantity: { type: Number, required: true, min: 1 },
   instructions: { type: String },
   unitPrice: { type: Number, required: true, min: 0 },

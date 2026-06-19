@@ -82,7 +82,7 @@ const CustomerDashboard = () => {
                     <p className="font-semibold text-slate-950 dark:text-white">Order {order.orderNumber}</p>
                     <span className="w-fit rounded-full bg-cyan-100 px-3 py-1 text-xs font-bold uppercase tracking-wide text-cyan-700 dark:bg-cyan-400/15 dark:text-cyan-200">{order.status}</span>
                   </div>
-                  <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">Total: ${order.totalAmount.toFixed(2)}</p>
+                  <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">Total: ₱{order.totalAmount.toFixed(2)}</p>
                 </div>
               ))
             )}

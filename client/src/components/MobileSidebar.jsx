@@ -13,8 +13,9 @@ const MobileSidebar = ({ open, onClose }) => {
 
   const adminLinks = [
     { to: '/admin', label: 'Overview' },
+    { to: '/admin/orders', label: 'Orders' },
     { to: '/admin/services', label: 'Services' },
-    { to: '/admin/inventory', label: 'Inventory' },
+    { to: '/admin/promo-codes', label: 'Promo Codes' },
   ];
 
   const links = user?.role === 'admin' ? adminLinks : customerLinks;

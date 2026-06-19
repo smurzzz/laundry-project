@@ -2,6 +2,7 @@ const asyncHandler = require('express-async-handler');
 const qrcode = require('qrcode');
 const LaundryOrder = require('../models/laundryOrderModel');
 const LaundryService = require('../models/laundryServiceModel');
+const Inventory = require('../models/inventoryModel');
 const Notification = require('../models/notificationModel');
 const ActivityLog = require('../models/activityLogModel');
 const sendEmail = require('../utils/mailer');
@@ -9,31 +10,95 @@ const { generateReceipt } = require('../utils/pdfGenerator');
 
 const createOrder = asyncHandler(async (req, res) => {
   const { items, pickupType, deliveryAddress, customerNotes, assignedDriver, estimatedPickup, estimatedDelivery } = req.body;
-  if (!items || items.length === 0) {
+  if (!Array.isArray(items) || items.length === 0) {
     res.status(400);
     throw new Error('Order items are required');
   }
 
   const serviceItems = await Promise.all(
-    items.map(async (item) => {
-      const service = await LaundryService.findById(item.serviceId);
-      if (!service) {
-        throw new Error('Invalid service selected');
+    items.map(async (item, index) => {
+      try {
+        const quantity = Number(item.quantity) || 1;
+        const instructions = item.instructions || '';
+        const option = item.option || null;
+
+        // Validate quantity
+        if (quantity < 1) {
+          throw new Error(`Item ${index + 1}: quantity must be at least 1`);
+        }
+
+        if (item.inventoryId) {
+          const inventoryItem = await Inventory.findById(item.inventoryId);
+          if (!inventoryItem) {
+            throw new Error(`Invalid inventory selected for order item ${index + 1}`);
+          }
+          if (inventoryItem.quantity < quantity) {
+            throw new Error(`Insufficient stock for ${inventoryItem.itemName}`);
+          }
+
+          const unitPrice = inventoryItem.price;
+          await Inventory.findByIdAndUpdate(item.inventoryId, { $inc: { quantity: -quantity } });
+
+          return {
+            inventory: inventoryItem._id,
+            itemType: 'Inventory',
+            name: inventoryItem.itemName,
+            quantity,
+            instructions,
+            unitPrice,
+            option: null,
+          };
+        }
+
+        if (item.serviceId) {
+          const service = await LaundryService.findById(item.serviceId);
+          if (!service) {
+            throw new Error(`Invalid service selected for order item ${index + 1}`);
+          }
+
+          const selectedOption = item.option?.name && Array.isArray(service.options)
+            ? service.options.find((opt) => opt.name === item.option.name) || item.option
+            : item.option || null;
+          const priceAdjustment = selectedOption?.priceAdjustment ?? 0;
+          const unitPrice = service.price + priceAdjustment;
+
+          return {
+            service: service._id,
+            itemType: 'Service',
+            name: service.name,
+            quantity,
+            instructions,
+            unitPrice,
+            option: selectedOption,
+          };
+        }
+
+        // Fallback for items sent with direct itemType and name
+        if (item.itemType && item.name) {
+          if (!['Service', 'Inventory'].includes(item.itemType)) {
+            throw new Error(`Item ${index + 1}: itemType must be 'Service' or 'Inventory'`);
+          }
+
+          const unitPrice = Number(item.unitPrice) || Number(item.basePrice) || Number(item.price) || 0;
+          if (unitPrice <= 0) {
+            throw new Error(`Item ${index + 1}: unitPrice must be greater than 0`);
+          }
+
+          return {
+            itemType: item.itemType,
+            name: item.name,
+            quantity,
+            instructions,
+            unitPrice,
+            option: item.itemType === 'Service' ? option : null,
+          };
+        }
+
+        throw new Error(`Invalid order item data at position ${index + 1}. Required fields: serviceId OR (itemType and name).`);
+      } catch (err) {
+        console.error(`Error processing item ${index + 1}:`, err.message);
+        throw err;
       }
-
-      const selectedOption = item.option?.name
-        ? service.options.find((opt) => opt.name === item.option.name) || item.option
-        : item.option || null;
-      const priceAdjustment = selectedOption?.priceAdjustment ?? 0;
-      const unitPrice = service.price + priceAdjustment;
-
-      return {
-        service: service._id,
-        quantity: item.quantity,
-        instructions: item.instructions,
-        unitPrice,
-        option: selectedOption,
-      };
     })
   );
 
@@ -107,6 +172,7 @@ const getOrders = asyncHandler(async (req, res) => {
   const orders = await LaundryOrder.find(filter)
     .populate('customer', 'name email')
     .populate('items.service', 'name price')
+    .populate('items.inventory', 'itemName price imageUrl')
     .sort({ createdAt: -1 })
     .skip(skip)
     .limit(limit);
@@ -119,7 +185,8 @@ const getOrders = asyncHandler(async (req, res) => {
 const getOrderById = asyncHandler(async (req, res) => {
   const order = await LaundryOrder.findById(req.params.id)
     .populate('customer', 'name email')
-    .populate('items.service', 'name price');
+    .populate('items.service', 'name price')
+    .populate('items.inventory', 'itemName price imageUrl');
 
   if (!order) {
     res.status(404);
@@ -135,32 +202,57 @@ const getOrderById = asyncHandler(async (req, res) => {
 });
 
 const updateOrderStatus = asyncHandler(async (req, res) => {
-  const order = await LaundryOrder.findById(req.params.id).populate('customer', 'name email');
+  const validStatuses = ['Pending', 'Confirmed', 'Washing', 'Drying', 'Folding', 'Ready for Pickup', 'Out for Delivery', 'Completed', 'Cancelled'];
+  
+  if (req.body.status && !validStatuses.includes(req.body.status)) {
+    res.status(400);
+    throw new Error(`Invalid status. Valid statuses are: ${validStatuses.join(', ')}`);
+  }
+
+  const updateData = {};
+  if (req.body.status) updateData.status = req.body.status;
+  if (req.body.assignedDriver) updateData.assignedDriver = req.body.assignedDriver;
+  if (req.body.estimatedDelivery) updateData.estimatedDelivery = req.body.estimatedDelivery;
+
+  const order = await LaundryOrder.findByIdAndUpdate(
+    req.params.id,
+    updateData,
+    { new: true, runValidators: false }
+  ).populate('customer', 'name email');
+
   if (!order) {
     res.status(404);
     throw new Error('Order not found');
   }
 
-  order.status = req.body.status || order.status;
-  order.assignedDriver = req.body.assignedDriver || order.assignedDriver;
-  order.estimatedDelivery = req.body.estimatedDelivery || order.estimatedDelivery;
+  try {
+    await Notification.create({
+      recipient: order.customer._id,
+      subject: 'Order Status Updated',
+      message: `Your order ${order.orderNumber} is now ${order.status}.`,
+      order: order._id,
+    });
+  } catch (error) {
+    console.error('Failed to create status notification:', error.message);
+  }
 
-  await order.save();
+  try {
+    if (order.customer.email) {
+      await sendEmail({
+        to: order.customer.email,
+        subject: `Order ${order.status} - CleanWash Laundry Hub`,
+        html: `<p>Your order <strong>${order.orderNumber}</strong> status has updated to <strong>${order.status}</strong>.</p>`,
+      });
+    }
+  } catch (error) {
+    console.error('Failed to send order status email:', error.message);
+  }
 
-  await Notification.create({
-    recipient: order.customer._id,
-    subject: 'Order Status Updated',
-    message: `Your order ${order.orderNumber} is now ${order.status}.`,
-    order: order._id,
-  });
-
-  await sendEmail({
-    to: order.customer.email,
-    subject: `Order ${order.status} - CleanWash Laundry Hub`,
-    html: `<p>Your order <strong>${order.orderNumber}</strong> status has updated to <strong>${order.status}</strong>.</p>`,
-  });
-
-  await ActivityLog.create({ user: req.user._id, order: order._id, action: 'Order status updated', details: `Status changed to ${order.status}` });
+  try {
+    await ActivityLog.create({ user: req.user._id, order: order._id, action: 'Order status updated', details: `Status changed to ${order.status}` });
+  } catch (error) {
+    console.error('Failed to create activity log for order status update:', error.message);
+  }
 
   res.json(order);
 });

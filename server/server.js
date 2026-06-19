@@ -10,12 +10,12 @@ const userRoutes = require('./routes/userRoutes');
 const orderRoutes = require('./routes/orderRoutes');
 const serviceRoutes = require('./routes/serviceRoutes');
 const inventoryRoutes = require('./routes/inventoryRoutes');
-const reportRoutes = require('./routes/reportRoutes');
 const notificationRoutes = require('./routes/notificationRoutes');
 const activityRoutes = require('./routes/activityRoutes');
 const ratingRoutes = require('./routes/ratingRoutes');
 const supportTicketRoutes = require('./routes/supportTicketRoutes');
 const promoCodeRoutes = require('./routes/promoCodeRoutes');
+const reportRoutes = require('./routes/reportRoutes');
 
 dotenv.config();
 const app = express();
@@ -34,12 +34,12 @@ app.use('/api/users', userRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/services', serviceRoutes);
 app.use('/api/inventory', inventoryRoutes);
-app.use('/api/reports', reportRoutes);
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/activity', activityRoutes);
 app.use('/api/ratings', ratingRoutes);
 app.use('/api/support-tickets', supportTicketRoutes);
 app.use('/api/promo-codes', promoCodeRoutes);
+app.use('/api/reports', reportRoutes);
 
 app.use(notFound);
 app.use(errorHandler);

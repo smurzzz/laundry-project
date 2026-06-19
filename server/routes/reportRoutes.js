@@ -3,7 +3,7 @@ const { getDashboardStats, exportOrdersExcel } = require('../controllers/reportC
 const { protect, authorize } = require('../middleware/authMiddleware');
 const router = express.Router();
 
-router.get('/dashboard', protect, authorize('admin'), getDashboardStats);
-router.get('/export/orders', protect, authorize('admin'), exportOrdersExcel);
+router.get('/dashboard-stats', protect, authorize('admin'), getDashboardStats);
+router.get('/export-orders', protect, authorize('admin'), exportOrdersExcel);
 
 module.exports = router;

@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import apiClient from '../../services/apiService';
 import { toast } from 'react-toastify';
 
-const emptyForm = { itemName: '', category: '', quantity: '', threshold: '', unit: '' };
+const emptyForm = { itemName: '', category: '', description: '', price: '', imageUrl: '', quantity: '', threshold: '', unit: '' };
 
 const InventoryPage = () => {
   const [items, setItems] = useState([]);
@@ -58,6 +58,7 @@ const InventoryPage = () => {
       ...form,
       quantity: Number(form.quantity),
       threshold: Number(form.threshold),
+      price: Number(form.price || 0),
       unit: form.unit || 'pcs',
       category: form.category || 'Cleaning',
     };
@@ -85,6 +86,9 @@ const InventoryPage = () => {
     setForm({
       itemName: item.itemName,
       category: item.category || '',
+      description: item.description || '',
+      price: item.price?.toString() || '',
+      imageUrl: item.imageUrl || '',
       quantity: String(item.quantity),
       threshold: String(item.threshold),
       unit: item.unit || '',
@@ -120,6 +124,7 @@ const InventoryPage = () => {
           <div>
             <h2 className="app-page-title">Inventory management</h2>
             <p className="mt-2 app-muted">Track supplies, stock levels, and low stock alerts for laundry operations.</p>
+            <p className="mt-2 app-muted">Note: inventory items are internal stock records and can be used to manage supply levels for your laundry services.</p>
           </div>
           <button type="button" onClick={loadItems} className="app-button">
             Refresh
@@ -147,12 +152,46 @@ const InventoryPage = () => {
           <h3 className="text-xl font-bold text-slate-950 dark:text-white">{editingId ? 'Edit inventory item' : 'Add inventory item'}</h3>
           <form className="mt-6 space-y-4" onSubmit={submitHandler}>
             <input value={form.itemName} onChange={(e) => setForm({ ...form, itemName: e.target.value })} placeholder="Item name" required disabled={Boolean(editingId)} className="app-input disabled:cursor-not-allowed disabled:opacity-60" />
-            <input value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })} placeholder="Category" className="app-input" />
+            <textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} placeholder="Description" rows="3" className="app-input" />
+            <div className="grid gap-4 sm:grid-cols-3">
+              <input value={form.price} onChange={(e) => setForm({ ...form, price: e.target.value })} type="number" min="0" step="0.01" placeholder="Price" className="app-input" />
+              <input value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })} placeholder="Category" className="app-input" />
+              <input value={form.unit} onChange={(e) => setForm({ ...form, unit: e.target.value })} placeholder="Unit, e.g. bottles, kg, pcs" className="app-input" />
+            </div>
             <div className="grid gap-4 sm:grid-cols-2">
               <input value={form.quantity} onChange={(e) => setForm({ ...form, quantity: e.target.value })} type="number" min="0" placeholder="Quantity" required className="app-input" />
               <input value={form.threshold} onChange={(e) => setForm({ ...form, threshold: e.target.value })} type="number" min="0" placeholder="Low stock threshold" required className="app-input" />
             </div>
-            <input value={form.unit} onChange={(e) => setForm({ ...form, unit: e.target.value })} placeholder="Unit, e.g. bottles, kg, pcs" className="app-input" />
+            <label className="block text-sm text-slate-600 dark:text-slate-300">
+              Image URL or upload
+              <input
+                type="text"
+                value={form.imageUrl}
+                onChange={(e) => setForm({ ...form, imageUrl: e.target.value })}
+                placeholder="Paste image URL"
+                className="app-input mt-2"
+              />
+            </label>
+            <label className="block text-sm text-slate-600 dark:text-slate-300">
+              Upload picture
+              <input
+                type="file"
+                accept="image/*"
+                onChange={async (e) => {
+                  const file = e.target.files?.[0];
+                  if (!file) return;
+                  const reader = new FileReader();
+                  reader.onloadend = () => {
+                    setForm((prev) => ({ ...prev, imageUrl: reader.result?.toString() || prev.imageUrl }));
+                  };
+                  reader.readAsDataURL(file);
+                }}
+                className="app-input mt-2"
+              />
+            </label>
+            {form.imageUrl && (
+              <img src={form.imageUrl} alt="Inventory preview" className="h-32 w-full rounded-3xl object-cover" />
+            )}
             <div className="flex flex-col gap-3 sm:flex-row">
               <button type="submit" disabled={saving} className="app-button-primary flex-1 disabled:cursor-not-allowed disabled:opacity-60">
                 {saving ? 'Saving...' : editingId ? 'Save changes' : 'Add item'}

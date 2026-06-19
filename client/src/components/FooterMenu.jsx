@@ -14,8 +14,9 @@ const FooterMenu = () => {
 
   const adminLinks = [
     { to: '/admin', label: 'Home' },
+    { to: '/admin/orders', label: 'Orders' },
     { to: '/admin/services', label: 'Services' },
-    { to: '/admin/inventory', label: 'Inventory' },
+    { to: '/admin/promo-codes', label: 'Promo' },
   ];
 
   const links = user.role === 'admin' ? adminLinks : customerLinks;

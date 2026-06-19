@@ -17,14 +17,14 @@ const generateReceipt = (order) => {
   doc.fontSize(16).text('Items');
 
   order.items.forEach((item) => {
-    doc.fontSize(12).text(`${item.quantity} x ${item.service.name} - $${item.unitPrice.toFixed(2)}`);
+    doc.fontSize(12).text(`${item.quantity} x ${item.service.name} - ₱${item.unitPrice.toFixed(2)}`);
     if (item.instructions) {
       doc.fontSize(10).fillColor('gray').text(`Instructions: ${item.instructions}`);
     }
   });
 
   doc.moveDown();
-  doc.fontSize(14).text(`Total: $${order.totalAmount.toFixed(2)}`);
+  doc.fontSize(14).text(`Total: ₱${order.totalAmount.toFixed(2)}`);
   doc.moveDown();
   doc.fontSize(10).fillColor('gray').text('Thank you for choosing CleanWash Laundry Hub.');
   doc.end();

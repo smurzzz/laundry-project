@@ -19,10 +19,9 @@ import ServiceRatingsPage from './pages/customer/ServiceRatingsPage';
 import PaymentHistoryPage from './pages/customer/PaymentHistoryPage';
 import SupportTicketsPage from './pages/customer/SupportTicketsPage';
 import ServicesPage from './pages/admin/ServicesPage';
-import InventoryPage from './pages/admin/InventoryPage';
-import AdminAnalyticsDashboard from './pages/admin/AdminAnalyticsDashboard';
 import PromoCodeManagementPage from './pages/admin/PromoCodeManagementPage';
 import TicketManagementPage from './pages/admin/TicketManagementPage';
+import OrderManagementPage from './pages/admin/OrderManagementPage';
 
 const ProtectedRoute = ({ children, roles, loginPath = '/login' }) => {
   const { user } = useAuth();
@@ -59,8 +58,7 @@ function App() {
               {/* Admin Routes */}
               <Route path="/admin" element={<ProtectedRoute roles={['admin']}><DashboardLayout><AdminDashboard /></DashboardLayout></ProtectedRoute>} />
               <Route path="/admin/services" element={<ProtectedRoute roles={['admin']}><DashboardLayout><ServicesPage /></DashboardLayout></ProtectedRoute>} />
-              <Route path="/admin/inventory" element={<ProtectedRoute roles={['admin']}><DashboardLayout><InventoryPage /></DashboardLayout></ProtectedRoute>} />
-              <Route path="/admin/analytics" element={<ProtectedRoute roles={['admin']}><DashboardLayout><AdminAnalyticsDashboard /></DashboardLayout></ProtectedRoute>} />
+              <Route path="/admin/orders" element={<ProtectedRoute roles={['admin']}><DashboardLayout><OrderManagementPage /></DashboardLayout></ProtectedRoute>} />
               <Route path="/admin/promo-codes" element={<ProtectedRoute roles={['admin']}><DashboardLayout><PromoCodeManagementPage /></DashboardLayout></ProtectedRoute>} />
               <Route path="/admin/support" element={<ProtectedRoute roles={['admin']}><DashboardLayout><TicketManagementPage /></DashboardLayout></ProtectedRoute>} />
               <Route path="*" element={<Navigate to="/" />} />

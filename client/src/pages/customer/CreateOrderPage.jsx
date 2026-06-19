@@ -10,23 +10,12 @@ const CreateOrderPage = () => {
   const [deliveryAddress, setDeliveryAddress] = useState('');
   const [notes, setNotes] = useState('');
 
-  useEffect(() => {
-    const loadServices = async () => {
-      try {
-        const { data } = await apiClient.get('/services');
-        setServices(data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    loadServices();
-  }, []);
-
   const addItem = (service, option = null) => {
     setItems((prev) => [
       ...prev,
       {
         serviceId: service._id,
+        itemType: 'Service',
         name: service.name,
         category: service.category,
         basePrice: service.price,
@@ -36,6 +25,18 @@ const CreateOrderPage = () => {
       },
     ]);
   };
+
+  useEffect(() => {
+    const loadCatalog = async () => {
+      try {
+        const { data: servicesData } = await apiClient.get('/services');
+        setServices(servicesData);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    loadCatalog();
+  }, []);
 
   const updateItem = (index, field, value) => {
     const copy = [...items];
@@ -76,11 +77,11 @@ const CreateOrderPage = () => {
       </div>
       <div className="grid gap-6 xl:grid-cols-[1fr_360px]">
         <div className="space-y-6">
-          <div className="app-panel">
+              <div className="app-panel">
             <h3 className="font-semibold text-slate-900 dark:text-white">Service catalog</h3>
             {services.length === 0 ? (
               <div className="mt-4 rounded-2xl border border-slate-200 bg-slate-50 p-6 text-slate-600 dark:border-white/10 dark:bg-slate-900/80 dark:text-slate-300">
-                No service choices are available yet. Please ask an admin to add services in the service catalog.
+                No service choices are available yet. Please ask an admin to add orderable services in the Services catalog.
               </div>
             ) : (
               <div className="mt-4 grid gap-4 sm:grid-cols-2">
@@ -88,7 +89,7 @@ const CreateOrderPage = () => {
                   <div key={service._id} className="rounded-2xl border border-slate-200 bg-white/85 p-4 shadow-sm dark:border-white/10 dark:bg-slate-900/80">
                     <button type="button" onClick={() => addItem(service)} className="w-full text-left">
                       <p className="font-semibold text-slate-900 dark:text-white">{service.name}</p>
-                      <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">{service.category} · ${service.price.toFixed(2)} · {service.duration}</p>
+                      <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">{service.category} · ₱{service.price.toFixed(2)} · {service.duration}</p>
                     </button>
                     {service.options?.length > 0 && (
                       <div className="mt-4 space-y-2 rounded-2xl border border-slate-200 bg-slate-50 p-3 text-sm text-slate-600 dark:border-white/10 dark:bg-slate-950/10 dark:text-slate-300">
@@ -96,7 +97,7 @@ const CreateOrderPage = () => {
                         {service.options.map((option, idx) => (
                           <button key={idx} type="button" onClick={() => addItem(service, option)} className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-left transition hover:bg-cyan-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200">
                             {option.name}
-                            {option.priceAdjustment ? ` (+${option.priceAdjustment.toFixed(2)})` : ''}
+                            {option.priceAdjustment ? ` (+₱${option.priceAdjustment.toFixed(2)})` : ''}
                             {option.description && <span className="block text-xs text-slate-500 dark:text-slate-400">{option.description}</span>}
                           </button>
                         ))}
@@ -111,7 +112,7 @@ const CreateOrderPage = () => {
             <div className="app-panel space-y-4">
               <h3 className="font-semibold text-slate-900 dark:text-white">Current order items</h3>
               {items.length === 0 ? (
-                <p className="text-slate-500 dark:text-slate-400">Add services above to begin your order.</p>
+                <p className="text-slate-500 dark:text-slate-400">Add a service above to begin your order.</p>
               ) : (
                 items.map((item, index) => {
                   const optionAdjustment = item.option?.priceAdjustment ?? 0;
@@ -155,7 +156,7 @@ const CreateOrderPage = () => {
                           </select>
                         </label>
                       )}
-                      <p className="text-sm text-slate-500 dark:text-slate-400">Unit price: ${itemPrice.toFixed(2)} · Total: ${(itemPrice * item.quantity).toFixed(2)}</p>
+                      <p className="text-sm text-slate-500 dark:text-slate-400">Unit price: ₱{itemPrice.toFixed(2)} · Total: ₱{(itemPrice * item.quantity).toFixed(2)}</p>
                     </div>
                   );
                 })
@@ -187,7 +188,7 @@ const CreateOrderPage = () => {
           <div className="app-panel mt-6">
             <p className="app-kicker">Selected items</p>
             <p className="mt-4 text-3xl font-semibold text-slate-900 dark:text-white">{items.length}</p>
-            <p className="mt-2 text-sm text-slate-600 dark:text-slate-400">Estimated total: ${items.reduce((sum, item) => {
+            <p className="mt-2 text-sm text-slate-600 dark:text-slate-400">Estimated total: ₱{items.reduce((sum, item) => {
               const itemPrice = item.basePrice + (item.option?.priceAdjustment ?? 0);
               return sum + itemPrice * item.quantity;
             }, 0).toFixed(2)}</p>

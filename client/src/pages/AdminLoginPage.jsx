@@ -18,7 +18,7 @@ const AdminLoginPage = () => {
         return;
       }
       toast.success('Admin logged in successfully');
-      navigate('/admin/inventory');
+      navigate('/admin');
     } catch (error) {
       toast.error(error.response?.data?.message || error.message);
     }
@@ -29,7 +29,7 @@ const AdminLoginPage = () => {
       <section className="app-card">
         <p className="app-kicker">Admin access</p>
         <h1 className="app-page-title mt-3">Admin login</h1>
-        <p className="mt-2 app-muted">Sign in with an admin account to manage inventory, services, and reports.</p>
+        <p className="mt-2 app-muted">Sign in with an admin account to manage services and reports.</p>
         <form className="mt-8 space-y-6" onSubmit={submitHandler}>
           <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">
             Email
@@ -39,7 +39,7 @@ const AdminLoginPage = () => {
             Password
             <input type="password" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} required className="app-input mt-2" />
           </label>
-          <button type="submit" className="app-button-primary w-full">Open admin inventory</button>
+          <button type="submit" className="app-button-primary w-full">Open admin dashboard</button>
         </form>
         <p className="mt-4 text-center text-sm text-slate-500 dark:text-slate-400">
           Need a new admin? <Link to="/admin/register" className="font-semibold text-cyan-600 hover:underline dark:text-cyan-300">Create admin account</Link>

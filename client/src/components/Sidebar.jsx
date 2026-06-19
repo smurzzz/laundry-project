@@ -13,8 +13,9 @@ const Sidebar = () => {
 
   const adminLinks = [
     { to: '/admin', label: 'Overview', icon: ChartBarSquareIcon },
+    { to: '/admin/orders', label: 'Orders', icon: ClipboardDocumentListIcon },
     { to: '/admin/services', label: 'Services', icon: WrenchScrewdriverIcon },
-    { to: '/admin/inventory', label: 'Inventory', icon: ArchiveBoxIcon },
+    { to: '/admin/promo-codes', label: 'Promo Codes', icon: ClipboardDocumentListIcon },
   ];
 
   const links = user?.role === 'admin' ? adminLinks : customerLinks;

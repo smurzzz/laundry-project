@@ -4,6 +4,7 @@ const { OAuth2Client } = require('google-auth-library');
 const User = require('../models/userModel');
 const generateToken = require('../utils/token');
 const ActivityLog = require('../models/activityLogModel');
+const sendEmail = require('../utils/mailer');
 
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
@@ -25,6 +26,21 @@ const registerUser = asyncHandler(async (req, res) => {
   const user = await User.create({ name, email, password: hashed, phone, address });
 
   await ActivityLog.create({ user: user._id, action: 'User registered', details: `New customer ${user.email}` });
+
+  try {
+    await sendEmail({
+      to: user.email,
+      subject: 'Welcome to CleanWash Laundry Hub',
+      html: `
+        <p>Hello ${user.name},</p>
+        <p>Your customer account has been created successfully.</p>
+        <p>You can now log in using this email address.</p>
+        <p>Thank you for choosing CleanWash.</p>
+      `,
+    });
+  } catch (emailError) {
+    console.error('Failed to send welcome email to customer:', emailError);
+  }
 
   res.status(201).json({
     token: generateToken(user),
@@ -50,6 +66,21 @@ const registerAdmin = asyncHandler(async (req, res) => {
   const user = await User.create({ name, email, password: hashed, phone, address, role: 'admin' });
 
   await ActivityLog.create({ user: user._id, action: 'Admin registered', details: `New admin ${user.email}` });
+
+  try {
+    await sendEmail({
+      to: user.email,
+      subject: 'Admin Access Granted - CleanWash Laundry Hub',
+      html: `
+        <p>Hello ${user.name},</p>
+        <p>Your admin account has been created successfully.</p>
+        <p>You can now log in and manage the CleanWash platform.</p>
+        <p>If you did not request this account, please contact support immediately.</p>
+      `,
+    });
+  } catch (emailError) {
+    console.error('Failed to send admin notification email:', emailError);
+  }
 
   res.status(201).json({
     token: generateToken(user),
