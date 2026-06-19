@@ -6,6 +6,8 @@ const ServicesPage = () => {
   const [services, setServices] = useState([]);
   const [loading, setLoading] = useState(true);
   const [form, setForm] = useState({ name: '', category: 'Wash', description: '', price: '', duration: '', options: [{ name: '', priceAdjustment: 0, description: '' }] });
+  const [editingId, setEditingId] = useState(null);
+  const [editForm, setEditForm] = useState(null);
 
   useEffect(() => {
     const loadServices = async () => {
@@ -96,15 +98,90 @@ const ServicesPage = () => {
             <div className="mt-6 space-y-4">
               {services.map((service) => (
                 <div key={service._id} className="app-panel">
-                  <p className="font-semibold text-slate-900 dark:text-white">{service.name}</p>
-                  <p className="text-sm text-slate-500 dark:text-slate-400">{service.category} · ₱{service.price.toFixed(2)} · {service.duration}</p>
-                  {service.options?.length > 0 && (
-                    <div className="mt-3 space-y-2 rounded-2xl border border-slate-200 bg-slate-50 p-3 text-sm text-slate-600 dark:border-white/10 dark:bg-slate-950/10 dark:text-slate-300">
-                      <p className="font-semibold">Choices</p>
-                      {service.options.map((option, idx) => (
-                        <p key={idx} className="leading-6">{option.name} {option.priceAdjustment !== 0 ? `(+${option.priceAdjustment.toFixed(2)})` : ''} — {option.description}</p>
-                      ))}
+                  {editingId === service._id ? (
+                    <div className="space-y-3">
+                      <input value={editForm.name} onChange={(e) => setEditForm({ ...editForm, name: e.target.value })} placeholder="Service name" required className="app-input" />
+                      <textarea value={editForm.description} onChange={(e) => setEditForm({ ...editForm, description: e.target.value })} placeholder="Description" rows="2" className="app-input" />
+                      <div className="grid gap-3 sm:grid-cols-3">
+                        <select value={editForm.category} onChange={(e) => setEditForm({ ...editForm, category: e.target.value })} className="app-input">
+                          <option value="Wash">Wash</option>
+                          <option value="Dry Clean">Dry Clean</option>
+                          <option value="Iron">Iron</option>
+                          <option value="Express">Express</option>
+                          <option value="Special">Special</option>
+                        </select>
+                        <input value={editForm.price} onChange={(e) => setEditForm({ ...editForm, price: e.target.value })} placeholder="Price" type="number" step="0.01" required className="app-input" />
+                        <input value={editForm.duration} onChange={(e) => setEditForm({ ...editForm, duration: e.target.value })} placeholder="Duration" required className="app-input" />
+                      </div>
+                      <div className="space-y-2">
+                        <p className="font-semibold">Choices</p>
+                        {editForm.options.map((option, idx) => (
+                          <div key={idx} className="grid gap-3 sm:grid-cols-[1fr_150px]">
+                            <input value={option.name} onChange={(e) => {
+                              const next = [...editForm.options];
+                              next[idx].name = e.target.value;
+                              setEditForm({ ...editForm, options: next });
+                            }} placeholder="Option name" className="app-input" />
+                            <input value={option.priceAdjustment} onChange={(e) => {
+                              const next = [...editForm.options];
+                              next[idx].priceAdjustment = Number(e.target.value);
+                              setEditForm({ ...editForm, options: next });
+                            }} placeholder="Price adj." type="number" step="0.01" className="app-input" />
+                            <input value={option.description} onChange={(e) => {
+                              const next = [...editForm.options];
+                              next[idx].description = e.target.value;
+                              setEditForm({ ...editForm, options: next });
+                            }} placeholder="Option description" className="app-input sm:col-span-2" />
+                          </div>
+                        ))}
+                        <div className="flex gap-2">
+                          <button type="button" className="app-button-secondary" onClick={() => setEditForm({ ...editForm, options: [...editForm.options, { name: '', priceAdjustment: 0, description: '' }] })}>Add choice</button>
+                          <button type="button" className="app-button-ghost" onClick={() => setEditForm({ ...editForm, options: editForm.options.slice(0, -1) })}>Remove last</button>
+                        </div>
+                      </div>
+                      <div className="flex gap-2">
+                        <button type="button" onClick={async () => {
+                          try {
+                            const options = editForm.options.filter((o) => o.name.trim());
+                            const payload = { ...editForm, price: Number(editForm.price), options };
+                            const { data } = await apiClient.put(`/services/${service._id}`, payload);
+                            setServices((prev) => prev.map((s) => s._id === service._id ? data : s));
+                            setEditingId(null);
+                            setEditForm(null);
+                            toast.success('Service updated');
+                          } catch (error) {
+                            toast.error(error.response?.data?.message || error.message);
+                          }
+                        }} className="app-button-primary">Save</button>
+                        <button type="button" onClick={() => { setEditingId(null); setEditForm(null); }} className="app-button-secondary">Cancel</button>
+                      </div>
                     </div>
+                  ) : (
+                    <>
+                      <p className="font-semibold text-slate-900 dark:text-white">{service.name}</p>
+                      <p className="text-sm text-slate-500 dark:text-slate-400">{service.category} · ₱{service.price.toFixed(2)} · {service.duration}</p>
+                      {service.options?.length > 0 && (
+                        <div className="mt-3 space-y-2 rounded-2xl border border-slate-200 bg-slate-50 p-3 text-sm text-slate-600 dark:border-white/10 dark:bg-slate-950/10 dark:text-slate-300">
+                          <p className="font-semibold">Choices</p>
+                          {service.options.map((option, idx) => (
+                            <p key={idx} className="leading-6">{option.name} {option.priceAdjustment !== 0 ? `(+${option.priceAdjustment.toFixed(2)})` : ''} — {option.description}</p>
+                          ))}
+                        </div>
+                      )}
+                      <div className="mt-3 flex gap-2">
+                        <button onClick={() => { setEditingId(service._id); setEditForm({ name: service.name, category: service.category || 'Wash', description: service.description || '', price: service.price, duration: service.duration || '', options: service.options?.length ? service.options : [{ name: '', priceAdjustment: 0, description: '' }] }); }} className="app-button-ghost">Edit</button>
+                        <button onClick={async () => {
+                          if (!window.confirm(`Delete service "${service.name}"? This action cannot be undone.`)) return;
+                          try {
+                            await apiClient.delete(`/services/${service._id}`);
+                            setServices((prev) => prev.filter((s) => s._id !== service._id));
+                            toast.success('Service deleted');
+                          } catch (error) {
+                            toast.error(error.response?.data?.message || error.message);
+                          }
+                        }} className="app-button-danger">Delete</button>
+                      </div>
+                    </>
                   )}
                 </div>
               ))}
