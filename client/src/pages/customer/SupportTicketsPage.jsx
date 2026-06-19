@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import { API_BASE_URL } from '../config/api';
 import { toast } from 'react-toastify';
 
 const SupportTicketsPage = () => {
@@ -20,7 +21,7 @@ const SupportTicketsPage = () => {
 
   const fetchTickets = async () => {
     try {
-      const response = await axios.get('http://localhost:5001/api/support-tickets/my-tickets', {
+      const response = await axios.get(API_BASE_URL + '/support-tickets/my-tickets', {
         headers: { Authorization: `Bearer ${localStorage.getItem('cw_token')}` },
       });
       setTickets(response.data);
@@ -34,7 +35,7 @@ const SupportTicketsPage = () => {
   const handleCreateTicket = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:5001/api/support-tickets', formData, {
+      await axios.post(API_BASE_URL + '/support-tickets', formData, {
         headers: { Authorization: `Bearer ${localStorage.getItem('cw_token')}` },
       });
       toast.success('Ticket created');
@@ -50,7 +51,7 @@ const SupportTicketsPage = () => {
     if (!newMessage.trim()) return;
     try {
       const response = await axios.post(
-        `http://localhost:5001/api/support-tickets/${ticketId}/message`,
+        `${API_BASE_URL}`/support-tickets/${ticketId}/message`,
         { text: newMessage },
         { headers: { Authorization: `Bearer ${localStorage.getItem('cw_token')}` } }
       );

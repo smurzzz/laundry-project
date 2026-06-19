@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import { API_BASE_URL } from '../config/api';
 import { toast } from 'react-toastify';
 
 const PromoCodeManagementPage = () => {
@@ -22,7 +23,7 @@ const PromoCodeManagementPage = () => {
 
   const fetchPromoCodes = async () => {
     try {
-      const response = await axios.get('http://localhost:5001/api/promo-codes', {
+      const response = await axios.get(API_BASE_URL + '/promo-codes', {
         headers: { Authorization: `Bearer ${localStorage.getItem('cw_token')}` },
       });
       setPromoCodes(response.data);
@@ -36,7 +37,7 @@ const PromoCodeManagementPage = () => {
   const handleCreatePromoCode = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:5001/api/promo-codes', formData, {
+      await axios.post(API_BASE_URL + '/promo-codes', formData, {
         headers: { Authorization: `Bearer ${localStorage.getItem('cw_token')}` },
       });
       toast.success('Promo code created');
@@ -59,7 +60,7 @@ const PromoCodeManagementPage = () => {
   const handleToggleActive = async (id, currentActive) => {
     try {
       await axios.patch(
-        `http://localhost:5001/api/promo-codes/${id}`,
+        `${API_BASE_URL}`/promo-codes/${id}`,
         { active: !currentActive },
         { headers: { Authorization: `Bearer ${localStorage.getItem('cw_token')}` } }
       );
@@ -73,7 +74,7 @@ const PromoCodeManagementPage = () => {
   const handleDeletePromoCode = async (id) => {
     if (window.confirm('Are you sure?')) {
       try {
-        await axios.delete(`http://localhost:5001/api/promo-codes/${id}`, {
+        await axios.delete(`${API_BASE_URL}`/promo-codes/${id}`, {
           headers: { Authorization: `Bearer ${localStorage.getItem('cw_token')}` },
         });
         fetchPromoCodes();

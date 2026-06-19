@@ -1,6 +1,7 @@
 import axios from 'axios';
+import { API_BASE_URL } from '../config/api';
 
-const api = axios.create({ baseURL: process.env.REACT_APP_API_URL || 'http://localhost:5001/api' });
+const api = axios.create({ baseURL: API_BASE_URL });
 
 export const loginRequest = async (credentials) => {
   const response = await api.post('/auth/login', credentials);
@@ -22,5 +23,5 @@ export const googleAuthRequest = async (tokenId) => {
   return response.data;
 };
 
-export const apiClient = axios.create({ baseURL: process.env.REACT_APP_API_URL || 'http://localhost:5001/api' });
+export const apiClient = axios.create({ baseURL: API_BASE_URL });
 

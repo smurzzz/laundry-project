@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import { API_BASE_URL } from '../config/api';
 import { toast } from 'react-toastify';
 
 const TicketManagementPage = () => {
@@ -15,7 +16,7 @@ const TicketManagementPage = () => {
 
   const fetchTickets = async () => {
     try {
-      const response = await axios.get('http://localhost:5001/api/support-tickets', {
+      const response = await axios.get(API_BASE_URL + '/support-tickets', {
         headers: { Authorization: `Bearer ${localStorage.getItem('cw_token')}` },
       });
       setTickets(response.data);
@@ -30,7 +31,7 @@ const TicketManagementPage = () => {
     if (!newMessage.trim()) return;
     try {
       const response = await axios.post(
-        `http://localhost:5001/api/support-tickets/${ticketId}/message`,
+        `${API_BASE_URL}`/support-tickets/${ticketId}/message`,
         { text: newMessage },
         { headers: { Authorization: `Bearer ${localStorage.getItem('cw_token')}` } }
       );
@@ -45,7 +46,7 @@ const TicketManagementPage = () => {
   const handleUpdateStatus = async (ticketId, newStatus) => {
     try {
       await axios.patch(
-        `http://localhost:5001/api/support-tickets/${ticketId}/status`,
+        `${API_BASE_URL}`/support-tickets/${ticketId}/status`,
         { status: newStatus },
         { headers: { Authorization: `Bearer ${localStorage.getItem('cw_token')}` } }
       );

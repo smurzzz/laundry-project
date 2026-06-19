@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import { API_BASE_URL } from '../config/api';
 import { toast } from 'react-toastify';
 
 const OrderTrackingPage = () => {
@@ -13,7 +14,7 @@ const OrderTrackingPage = () => {
 
   const fetchOrders = async () => {
     try {
-      const response = await axios.get('http://localhost:5001/api/orders', {
+      const response = await axios.get(API_BASE_URL + '/orders', {
         headers: { Authorization: `Bearer ${localStorage.getItem('cw_token')}` },
       });
       setOrders(response.data || []);

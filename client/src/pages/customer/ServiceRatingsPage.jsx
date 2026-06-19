@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import { API_BASE_URL } from '../config/api';
 import { toast } from 'react-toastify';
 
 const ServiceRatingsPage = () => {
@@ -18,10 +19,10 @@ const ServiceRatingsPage = () => {
     try {
       const token = localStorage.getItem('cw_token');
       const [ratingsRes, ordersRes] = await Promise.all([
-        axios.get('http://localhost:5001/api/ratings/my-ratings', {
+        axios.get(API_BASE_URL + '/ratings/my-ratings', {
           headers: { Authorization: `Bearer ${token}` },
         }),
-        axios.get('http://localhost:5001/api/orders', {
+        axios.get(API_BASE_URL + '/orders', {
           headers: { Authorization: `Bearer ${token}` },
         }),
       ]);
@@ -40,7 +41,7 @@ const ServiceRatingsPage = () => {
     try {
       const token = localStorage.getItem('cw_token');
       await axios.post(
-        'http://localhost:5001/api/ratings',
+        API_BASE_URL + '/ratings',
         {
           orderId: selectedOrder._id,
           serviceId: selectedOrder.services?.[0],
