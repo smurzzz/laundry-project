@@ -51,7 +51,7 @@ const SupportTicketsPage = () => {
     if (!newMessage.trim()) return;
     try {
       const response = await axios.post(
-        `${API_BASE_URL}`/support-tickets/${ticketId}/message`,
+        `${API_BASE_URL}/support-tickets/${ticketId}/message`,
         { text: newMessage },
         { headers: { Authorization: `Bearer ${localStorage.getItem('cw_token')}` } }
       );

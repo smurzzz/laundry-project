@@ -31,7 +31,7 @@ const TicketManagementPage = () => {
     if (!newMessage.trim()) return;
     try {
       const response = await axios.post(
-        `${API_BASE_URL}`/support-tickets/${ticketId}/message`,
+        `${API_BASE_URL}/support-tickets/${ticketId}/message`,
         { text: newMessage },
         { headers: { Authorization: `Bearer ${localStorage.getItem('cw_token')}` } }
       );
@@ -46,7 +46,7 @@ const TicketManagementPage = () => {
   const handleUpdateStatus = async (ticketId, newStatus) => {
     try {
       await axios.patch(
-        `${API_BASE_URL}`/support-tickets/${ticketId}/status`,
+        `${API_BASE_URL}/support-tickets/${ticketId}/status`,
         { status: newStatus },
         { headers: { Authorization: `Bearer ${localStorage.getItem('cw_token')}` } }
       );

@@ -60,7 +60,7 @@ const PromoCodeManagementPage = () => {
   const handleToggleActive = async (id, currentActive) => {
     try {
       await axios.patch(
-        `${API_BASE_URL}`/promo-codes/${id}`,
+        `${API_BASE_URL}/promo-codes/${id}`,
         { active: !currentActive },
         { headers: { Authorization: `Bearer ${localStorage.getItem('cw_token')}` } }
       );
@@ -74,7 +74,7 @@ const PromoCodeManagementPage = () => {
   const handleDeletePromoCode = async (id) => {
     if (window.confirm('Are you sure?')) {
       try {
-        await axios.delete(`${API_BASE_URL}`/promo-codes/${id}`, {
+        await axios.delete(`${API_BASE_URL}/promo-codes/${id}`, {
           headers: { Authorization: `Bearer ${localStorage.getItem('cw_token')}` },
         });
         fetchPromoCodes();
