@@ -4,7 +4,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { useTheme } from '../contexts/ThemeContext';
 import MobileSidebar from './MobileSidebar';
 import { Bars3Icon, MoonIcon, SunIcon } from '@heroicons/react/24/outline';
-import logo from '../assets/64315e80-69fa-4571-a670-a26a992ac906.jpeg';
+import logo from '../assets/laundryLogo.png';
 
 const Navbar = () => {
   const { user, logout } = useAuth();

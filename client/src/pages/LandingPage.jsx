@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { ArrowRightIcon, CheckBadgeIcon, ClockIcon, SparklesIcon, TruckIcon, ShieldCheckIcon, ChartBarIcon, BanknotesIcon } from '@heroicons/react/24/outline';
 import { useAuth } from '../contexts/AuthContext';
-import logo from '../assets/64315e80-69fa-4571-a670-a26a992ac906.jpeg';
+import logo from '../assets/laundryLogo.png';
 
 const highlights = [
   { label: 'Pickup speed', value: 'Same-day' },

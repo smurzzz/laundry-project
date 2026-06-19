@@ -7,16 +7,20 @@ const AdminDashboard = () => {
   const [recentOrders, setRecentOrders] = useState([]);
 
   useEffect(() => {
-    const fetchRecentOrders = async () => {
+    const fetchDashboardData = async () => {
       try {
-        const { data } = await apiClient.get('/orders?limit=5');
-        setRecentOrders(data.orders || []);
+        const { data: statsData } = await apiClient.get('/reports/dashboard-stats');
+        console.log('Stats data:', statsData);
+        setStats(statsData);
+
+        const { data: ordersData } = await apiClient.get('/orders?limit=5');
+        setRecentOrders(ordersData.orders || []);
       } catch (error) {
-        console.error(error);
+        console.error('Error fetching dashboard data:', error.message);
       }
     };
 
-    fetchRecentOrders();
+    fetchDashboardData();
   }, []);
 
   return (
@@ -37,7 +41,7 @@ const AdminDashboard = () => {
         </div>
         <div className="app-card">
           <p className="app-kicker">Revenue</p>
-          <p className="mt-4 text-4xl font-bold text-slate-950 dark:text-white">${stats?.revenue?.toFixed(2) ?? '...'}</p>
+          <p className="mt-4 text-4xl font-bold text-slate-950 dark:text-white">₱{stats?.revenue?.toFixed(2) ?? '...'}</p>
         </div>
       </div>
       <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
