@@ -4,7 +4,7 @@ import { toast } from 'react-toastify';
 import { useAuth } from '../contexts/AuthContext';
 
 const RegisterPage = () => {
-  const [form, setForm] = useState({ name: '', email: '', password: '' });
+  const [form, setForm] = useState({ name: '', email: '', phone: '', password: '' });
   const { register } = useAuth();
   const navigate = useNavigate();
 
@@ -35,6 +35,16 @@ const RegisterPage = () => {
           <input type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} required className="app-input mt-2" />
         </label>
         <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">
+          Phone
+          <input
+            type="tel"
+            value={form.phone}
+            onChange={(e) => setForm({ ...form, phone: e.target.value })}
+            className="app-input mt-2"
+            placeholder="0917 123 4567"
+          />
+        </label>
+        <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">
           Password
           <input type="password" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} required className="app-input mt-2" />
         </label>
@@ -49,4 +59,3 @@ const RegisterPage = () => {
 };
 
 export default RegisterPage;
-

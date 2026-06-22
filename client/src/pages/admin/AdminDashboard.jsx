@@ -68,7 +68,7 @@ const AdminDashboard = () => {
           </div>
           <div className="app-panel">
             <p className="text-sm text-slate-500 dark:text-slate-400">Average order value</p>
-            <p className="mt-4 text-3xl font-bold text-slate-950 dark:text-white">${stats?.revenue && stats.monthlyOrders ? (stats.revenue / Math.max(stats.monthlyOrders.length, 1)).toFixed(2) : '...'}</p>
+            <p className="mt-4 text-3xl font-bold text-slate-950 dark:text-white">₱{stats?.revenue && stats.monthlyOrders ? (stats.revenue / Math.max(stats.monthlyOrders.length, 1)).toFixed(2) : '...'}</p>
           </div>
           <div className="app-panel">
             <p className="text-sm text-slate-500 dark:text-slate-400">Monthly trend</p>

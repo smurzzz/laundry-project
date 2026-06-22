@@ -16,7 +16,6 @@ import CreateOrderPage from './pages/customer/CreateOrderPage';
 import ProfilePage from './pages/customer/ProfilePage';
 import OrderTrackingPage from './pages/customer/OrderTrackingPage';
 import ServiceRatingsPage from './pages/customer/ServiceRatingsPage';
-import PaymentHistoryPage from './pages/customer/PaymentHistoryPage';
 import SupportTicketsPage from './pages/customer/SupportTicketsPage';
 import ServicesPage from './pages/admin/ServicesPage';
 import PromoCodeManagementPage from './pages/admin/PromoCodeManagementPage';
@@ -53,7 +52,6 @@ function App() {
               <Route path="/customer/profile" element={<ProtectedRoute roles={['customer']}><DashboardLayout><ProfilePage /></DashboardLayout></ProtectedRoute>} />
               <Route path="/customer/tracking" element={<ProtectedRoute roles={['customer']}><DashboardLayout><OrderTrackingPage /></DashboardLayout></ProtectedRoute>} />
               <Route path="/customer/ratings" element={<ProtectedRoute roles={['customer']}><DashboardLayout><ServiceRatingsPage /></DashboardLayout></ProtectedRoute>} />
-              <Route path="/customer/payment-history" element={<ProtectedRoute roles={['customer']}><DashboardLayout><PaymentHistoryPage /></DashboardLayout></ProtectedRoute>} />
               <Route path="/customer/support" element={<ProtectedRoute roles={['customer']}><DashboardLayout><SupportTicketsPage /></DashboardLayout></ProtectedRoute>} />
               {/* Admin Routes */}
               <Route path="/admin" element={<ProtectedRoute roles={['admin']}><DashboardLayout><AdminDashboard /></DashboardLayout></ProtectedRoute>} />
@@ -72,4 +70,3 @@ function App() {
 }
 
 export default App;
-

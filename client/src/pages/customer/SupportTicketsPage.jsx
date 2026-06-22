@@ -24,7 +24,7 @@ const SupportTicketsPage = () => {
       const response = await axios.get(API_BASE_URL + '/support-tickets/my-tickets', {
         headers: { Authorization: `Bearer ${localStorage.getItem('cw_token')}` },
       });
-      setTickets(response.data);
+      setTickets(response.data.tickets || response.data || []);
       setLoading(false);
     } catch (error) {
       toast.error('Failed to fetch tickets');
@@ -216,4 +216,3 @@ const SupportTicketsPage = () => {
 };
 
 export default SupportTicketsPage;
-

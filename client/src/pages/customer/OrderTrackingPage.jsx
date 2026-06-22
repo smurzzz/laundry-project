@@ -8,7 +8,7 @@ const OrderTrackingPage = () => {
   const [loading, setLoading] = useState(true);
   const [selectedOrder, setSelectedOrder] = useState(null);
 
-  useEffect((a) => {
+  useEffect(() => {
     fetchOrders();
   }, []);
 
@@ -17,7 +17,7 @@ const OrderTrackingPage = () => {
       const response = await axios.get(API_BASE_URL + '/orders', {
         headers: { Authorization: `Bearer ${localStorage.getItem('cw_token')}` },
       });
-      setOrders(response.data || []);
+      setOrders(response.data.orders || response.data || []);
       setLoading(false);
     } catch (error) {
       toast.error('Failed to fetch orders');
@@ -116,4 +116,3 @@ const OrderTrackingPage = () => {
 };
 
 export default OrderTrackingPage;
-

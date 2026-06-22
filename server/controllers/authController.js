@@ -44,7 +44,15 @@ const registerUser = asyncHandler(async (req, res) => {
 
   res.status(201).json({
     token: generateToken(user),
-    user: { id: user._id, name: user.name, email: user.email, role: user.role, profilePhoto: user.profilePhoto },
+    user: {
+      id: user._id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+      phone: user.phone,
+      address: user.address,
+      profilePhoto: user.profilePhoto,
+    },
   });
 });
 
@@ -84,7 +92,15 @@ const registerAdmin = asyncHandler(async (req, res) => {
 
   res.status(201).json({
     token: generateToken(user),
-    user: { id: user._id, name: user.name, email: user.email, role: user.role, profilePhoto: user.profilePhoto },
+    user: {
+      id: user._id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+      phone: user.phone,
+      address: user.address,
+      profilePhoto: user.profilePhoto,
+    },
   });
 });
 
@@ -107,7 +123,15 @@ const loginUser = asyncHandler(async (req, res) => {
 
   res.json({
     token: generateToken(user),
-    user: { id: user._id, name: user.name, email: user.email, role: user.role, profilePhoto: user.profilePhoto },
+    user: {
+      id: user._id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+      phone: user.phone,
+      address: user.address,
+      profilePhoto: user.profilePhoto,
+    },
   });
 });
 
@@ -126,7 +150,15 @@ const googleSignIn = asyncHandler(async (req, res) => {
 
   res.json({
     token: generateToken(user),
-    user: { id: user._id, name: user.name, email: user.email, role: user.role, profilePhoto: user.profilePhoto },
+    user: {
+      id: user._id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+      phone: user.phone,
+      address: user.address,
+      profilePhoto: user.profilePhoto,
+    },
   });
 });
 

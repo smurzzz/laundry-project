@@ -28,7 +28,8 @@ const ServiceRatingsPage = () => {
       ]);
 
       setMyRatings(ratingsRes.data);
-      setCompletedOrders(ordersRes.data.filter((o) => o.status === 'completed'));
+      const orders = ordersRes.data.orders || ordersRes.data || [];
+      setCompletedOrders(orders.filter((o) => String(o.status).toLowerCase() === 'completed'));
       setLoading(false);
     } catch (error) {
       toast.error('Failed to fetch ratings');
@@ -173,4 +174,3 @@ const ServiceRatingsPage = () => {
 };
 
 export default ServiceRatingsPage;
-

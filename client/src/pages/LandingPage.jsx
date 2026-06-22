@@ -38,6 +38,12 @@ const steps = [
   'Receive your finished laundry on the schedule you choose.',
 ];
 
+const footerLinks = [
+  { label: 'Get started', to: '/register' },
+  { label: 'Sign in', to: '/login' },
+  { label: 'Admin access', to: '/admin/login' },
+];
+
 const LandingPage = () => {
   const { user } = useAuth();
   const dashboardPath = user?.role === 'admin' ? '/admin' : '/customer';
@@ -215,6 +221,51 @@ const LandingPage = () => {
           </div>
         </article>
       </section>
+
+      <footer className="rounded-[2rem] border border-white/70 bg-slate-950 px-6 py-10 text-white shadow-[0_30px_120px_-56px_rgba(15,23,42,0.45)] dark:border-white/10 sm:px-10">
+        <div className="grid gap-8 lg:grid-cols-[1.2fr_0.8fr_0.8fr]">
+          <div>
+            <p className="app-kicker text-cyan-200">Contact us</p>
+            <h2 className="mt-3 text-2xl font-bold">We're here to help with orders, support, and account questions.</h2>
+            <p className="mt-3 max-w-2xl text-sm leading-6 text-white/70">
+              Reach out anytime for laundry service inquiries, pickup coordination, or account assistance.
+            </p>
+          </div>
+
+          <div>
+            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-white/50">Phone</p>
+            <a href="tel:09928245215" className="mt-3 block text-lg font-semibold text-white transition hover:text-cyan-200">
+              09928245215
+            </a>
+            <p className="mt-4 text-sm font-semibold uppercase tracking-[0.18em] text-white/50">Email</p>
+            <a href="mailto:hansargate10@gmail.com" className="mt-3 block text-lg font-semibold text-white transition hover:text-cyan-200">
+              hansargate10@gmail.com
+            </a>
+            <p className="mt-4 text-sm font-semibold uppercase tracking-[0.18em] text-white/50">Location</p>
+            <p className="mt-3 text-lg font-semibold text-white">
+              Blk28 Maswerte St. Lupang Arenda Taytay Rizal
+            </p>
+          </div>
+
+          <div>
+            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-white/50">Quick links</p>
+            <ul className="mt-3 space-y-3">
+              {footerLinks.map((item) => (
+                <li key={item.label}>
+                  <Link to={item.to} className="text-sm text-white/80 transition hover:text-cyan-200">
+                    {item.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+
+        <div className="mt-8 flex flex-col gap-3 border-t border-white/10 pt-6 text-sm text-white/55 sm:flex-row sm:items-center sm:justify-between">
+          <p>CleanWash Laundry Hub</p>
+          <p>Fast pickup, tidy updates, and friendly support.</p>
+        </div>
+      </footer>
     </div>
   );
 };
