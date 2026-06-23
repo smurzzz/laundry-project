@@ -9,6 +9,8 @@ const userSchema = new mongoose.Schema({
   phone: { type: String },
   address: { type: String },
   googleId: { type: String },
+  resetPasswordToken: { type: String },
+  resetPasswordExpire: { type: Date },
   registeredAt: { type: Date, default: Date.now },
   ratings: [
     {

@@ -23,5 +23,14 @@ export const googleAuthRequest = async (tokenId) => {
   return response.data;
 };
 
-export const apiClient = axios.create({ baseURL: API_BASE_URL });
+export const forgotPasswordRequest = async (payload) => {
+  const response = await api.post('/auth/forgot-password', payload);
+  return response.data;
+};
 
+export const resetPasswordRequest = async (token, payload) => {
+  const response = await api.put(`/auth/reset-password/${token}`, payload);
+  return response.data;
+};
+
+export const apiClient = axios.create({ baseURL: API_BASE_URL });

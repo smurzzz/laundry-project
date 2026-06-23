@@ -7,6 +7,8 @@ const Notification = require('../models/notificationModel');
 const ActivityLog = require('../models/activityLogModel');
 const sendEmail = require('../utils/mailer');
 const { generateReceipt } = require('../utils/pdfGenerator');
+const { buildEmailTemplate } = require('../utils/emailTemplate');
+const { buildOrderNotification } = require('../utils/notificationCopy');
 
 const createOrder = asyncHandler(async (req, res) => {
   const { items, pickupType, deliveryAddress, customerNotes, assignedDriver, estimatedPickup, estimatedDelivery } = req.body;
@@ -124,10 +126,11 @@ const createOrder = asyncHandler(async (req, res) => {
   }
 
   try {
+    const notificationCopy = buildOrderNotification(order.orderNumber, order.status);
     await Notification.create({
       recipient: req.user._id,
-      subject: 'Order Confirmation',
-      message: `Your order ${order.orderNumber} has been received and is pending confirmation.`,
+      subject: notificationCopy.subject,
+      message: `Your order ${order.orderNumber} has been received and is pending confirmation. We'll keep you updated here and by email.`,
       order: order._id,
     });
   } catch (error) {
@@ -138,7 +141,17 @@ const createOrder = asyncHandler(async (req, res) => {
     await sendEmail({
       to: req.user.email,
       subject: 'Order Confirmed - CleanWash Laundry Hub',
-      html: `<p>Your order <strong>${order.orderNumber}</strong> has been created successfully.</p><p>We will notify you when the status updates.</p>`,
+      html: buildEmailTemplate({
+        preheader: `Order ${order.orderNumber} has been received successfully.`,
+        title: 'Order received',
+        bodyHtml: `
+          <p style="margin: 0 0 16px;">Hello ${req.user.name || 'there'},</p>
+          <p style="margin: 0 0 16px;">Your order <strong>${order.orderNumber}</strong> has been created successfully.</p>
+          <p style="margin: 0;">We will notify you whenever the status changes.</p>
+        `,
+        ctaText: 'Track orders',
+        ctaUrl: `${process.env.CLIENT_URL || 'http://localhost:5173'}/customer/orders`,
+      }),
     });
   } catch (error) {
     console.error('Failed to send order confirmation email:', error);
@@ -226,10 +239,11 @@ const updateOrderStatus = asyncHandler(async (req, res) => {
   }
 
   try {
+    const notificationCopy = buildOrderNotification(order.orderNumber, order.status);
     await Notification.create({
       recipient: order.customer._id,
-      subject: 'Order Status Updated',
-      message: `Your order ${order.orderNumber} is now ${order.status}.`,
+      subject: notificationCopy.subject,
+      message: notificationCopy.message,
       order: order._id,
     });
   } catch (error) {
@@ -241,7 +255,18 @@ const updateOrderStatus = asyncHandler(async (req, res) => {
       await sendEmail({
         to: order.customer.email,
         subject: `Order ${order.status} - CleanWash Laundry Hub`,
-        html: `<p>Your order <strong>${order.orderNumber}</strong> status has updated to <strong>${order.status}</strong>.</p>`,
+        html: buildEmailTemplate({
+          preheader: `Your order ${order.orderNumber} is now ${order.status}.`,
+          title: `Order ${order.status}`,
+          bodyHtml: `
+            <p style="margin: 0 0 16px;">Hello ${order.customer.name || 'there'},</p>
+            <p style="margin: 0 0 16px;">Your order <strong>${order.orderNumber}</strong> has been updated to <strong>${order.status}</strong>.</p>
+            <p style="margin: 0;">We will keep you updated as it moves through the process.</p>
+          `,
+          ctaText: 'View your orders',
+          ctaUrl: `${process.env.CLIENT_URL || 'http://localhost:5173'}/customer/orders`,
+          accent: '#0f766e',
+        }),
       });
     }
   } catch (error) {

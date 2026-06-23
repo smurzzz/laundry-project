@@ -39,6 +39,11 @@ const AdminLoginPage = () => {
             Password
             <input type="password" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} required className="app-input mt-2" />
           </label>
+          <div className="text-right text-sm">
+            <Link to="/forgot-password" className="font-semibold text-cyan-600 hover:underline dark:text-cyan-300">
+              Forgot password?
+            </Link>
+          </div>
           <button type="submit" className="app-button-primary w-full">Open admin dashboard</button>
         </form>
         <p className="mt-4 text-center text-sm text-slate-500 dark:text-slate-400">
@@ -50,4 +55,3 @@ const AdminLoginPage = () => {
 };
 
 export default AdminLoginPage;
-
